@@ -1,0 +1,22 @@
+# Python Virtual Environment
+myenv/
+__pycache__/
+*cache/
+
+# Meson build artifacts
+build/
+builddir/
+subprojects/
+# Except for wrap files, which define dependencies
+!subprojects/*.wrap
+
+# Compiled Objects and Libraries
+*.o 
+*.a 
+*.so 
+
+# Executables
+*.out 
+
+# IDEs
+.vscode/
