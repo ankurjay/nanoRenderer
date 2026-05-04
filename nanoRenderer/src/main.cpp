@@ -9,9 +9,12 @@ constexpr TGAColor yellow = {0, 200, 255, 255};
 
 void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
 {
-    for (float t = 0.f; t < 1.f; t += 0.02f) {
-        int x = std::round( ax + (bx - ax) * t );
-        int y = std::round( ay + (by - ay) * t );
+    auto denom = static_cast<float>(bx - ax);
+    auto ydiff = by - ay;
+
+    for (int x = ax; x <= bx; x++) {
+        float t = (x - ax) / denom;
+        int y = std::round(ay + ydiff * t);
         framebuffer.set(x, y, color);
     }
 }
