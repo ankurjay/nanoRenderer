@@ -1,7 +1,7 @@
 # Define the project name, version and compilation options
 project('nanoRenderer', 'cpp',
     version : '1.0.0',
-    default_options : ['warning_level=3', 'cpp_std=c++17']
+    default_options : ['warning_level=3', 'cpp_std=c++17', 'optimization=3']
 )
 
 # Tell Meson where the headers live

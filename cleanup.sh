@@ -11,6 +11,9 @@ cd nanoRenderer
 echo "Removing build folder..."
 rm -rf build
 
+echo "Removing build-prof folder..."
+rm -rf build-prof
+
 echo "Removing subprojects..."
 rm -rf subprojects
 
