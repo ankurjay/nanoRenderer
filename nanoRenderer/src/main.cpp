@@ -9,6 +9,12 @@ constexpr TGAColor yellow = {0, 200, 255, 255};
 
 void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
 {
+    if (ax > bx) {
+       // make it go left-to-right
+       std::swap(ax, bx);
+       std::swap(ay, by); 
+    }
+
     auto denom = static_cast<float>(bx - ax);
     auto ydiff = by - ay;
 
