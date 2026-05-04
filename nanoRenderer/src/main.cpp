@@ -9,6 +9,15 @@ constexpr TGAColor yellow = {0, 200, 255, 255};
 
 void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
 {
+    // First, check if the line is steep
+    bool steep = std::abs(ax - bx) < std::abs(ay - by);
+
+    // If the line is steep, we transpose the coordinates
+    if (steep) {
+        std::swap(ax, ay);
+        std::swap(bx, by);
+    }
+
     if (ax > bx) {
        // make it go left-to-right
        std::swap(ax, bx);
@@ -21,7 +30,13 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
     for (int x = ax; x <= bx; x++) {
         float t = (x - ax) / denom;
         int y = std::round(ay + ydiff * t);
-        framebuffer.set(x, y, color);
+
+        // If transposed, de-transpose
+        if (steep) {
+            framebuffer.set(y, x, color);
+        } else {
+            framebuffer.set(x, y, color);
+        }
     }
 }
 
