@@ -21,12 +21,12 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
        std::swap(ay, by); 
     }
 
-    auto denom = static_cast<float>(bx - ax);
-    auto ydiff = by - ay;
-    auto K = std::abs(ydiff) / denom;
+    auto dtor = bx - ax;
+    auto ntor = by - ay;
+    auto abs_ntor = std::abs(ntor);
 
     int y = ay;
-    float error = 0; 
+    int ierror = 0; 
     for (int x = ax; x <= bx; x++) {
         // If transposed, de-transpose
         if (steep) {
@@ -34,10 +34,10 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
         } else {
             framebuffer.set(x, y, color);
         }
-        error += K;
-        if (error > 0.5) {
-            y += (ydiff > 0) ? 1 : -1; // If positive slop, increment 1 else decrement 1
-            error -= 1;
+        ierror += 2 * abs_ntor;
+        if (ierror > dtor) {
+            y += (ntor > 0) ? 1 : -1; // If positive slope, increment 1 else decrement 1
+            ierror -= 2 * dtor;
         }
     }
 }
