@@ -4,6 +4,7 @@
 #include <ctime>
 #include "line.h"
 #include "tgaimage.h"
+#include "model.h"
 
 int main(int argc, char** argv) {
     constexpr int width  = 64;
