@@ -26,18 +26,23 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
     auto abs_ntor = std::abs(ntor);
 
     int y = ay;
-    int ierror = 0; 
-    for (int x = ax; x <= bx; x++) {
-        // If transposed, de-transpose
-        if (steep) {
+    int ierror = 0;
+    int y_step = (ntor > 0) ? 1 : -1; // If positive slope, increment 1 else decrement 1
+    
+    if (steep) {
+        for (int x = ax; x <= bx; x++) {
+            // Since we transposed the coordinates earlier, we need to de-transpose them
             framebuffer.set(y, x, color);
-        } else {
-            framebuffer.set(x, y, color);
+            ierror += 2 * abs_ntor;
+            y += y_step                 * (ierror > dtor); 
+            ierror -= 2 * dtor          * (ierror > dtor);
         }
-        ierror += 2 * abs_ntor;
-        if (ierror > dtor) {
-            y += (ntor > 0) ? 1 : -1; // If positive slope, increment 1 else decrement 1
-            ierror -= 2 * dtor;
+    } else {
+        for (int x = ax; x <= bx; x++) {
+            framebuffer.set(x, y, color);
+            ierror += 2 * abs_ntor;
+            y += y_step                 * (ierror > dtor); 
+            ierror -= 2 * dtor          * (ierror > dtor);
         }
     }
 }
