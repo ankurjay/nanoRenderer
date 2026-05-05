@@ -17,22 +17,23 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
 
     auto denom = static_cast<float>(bx - ax);
     auto ydiff = by - ay;
+    auto K = ydiff / denom;
+
     if (ax > bx) {
        // make it go left-to-right
        std::swap(ax, bx);
        std::swap(ay, by); 
     }
 
+    float y = ay; 
     for (int x = ax; x <= bx; x++) {
-        float t = (x - ax) / denom;
-        int y = std::round(ay + ydiff * t);
-
         // If transposed, de-transpose
         if (steep) {
             framebuffer.set(y, x, color);
         } else {
             framebuffer.set(x, y, color);
         }
+        y += K;
     }
 }
 
