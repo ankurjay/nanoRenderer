@@ -17,6 +17,9 @@ sources = []
 
 # Move into subdirectories to collect source files
 subdir('src/tgaimage')
+subdir('src/model')
+subdir('src/wireframe')
+subdir('src/line')
 
 # Finally, add the main entry point
 sources += files('src/main.cpp')
