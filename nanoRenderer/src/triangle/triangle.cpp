@@ -12,6 +12,7 @@ void triangle(int ax, int ay, int bx, int by, int cx, int cy, TGAImage &framebuf
     auto [bbminx, bbmaxx] = minmax3(ax, bx, cx);
     auto [bbminy, bbmaxy] = minmax3(ay, by, cy);
     double total_area = signed_triangle_area(ax, ay, bx, by, cx, cy);
+    if (total_area < 1) return; // Backface culling + discarding triangles that cover less than a pixel
 
 #pragma omp parallel for
     for (int x = bbminx; x <= bbmaxx; x++) {
