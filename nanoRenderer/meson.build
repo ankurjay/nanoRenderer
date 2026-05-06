@@ -12,6 +12,15 @@ project('nanoRenderer', 'cpp',
 # Tell Meson where the headers live
 include_dir = include_directories('include')
 
+# Add dependencies
+openmp_dep = dependency('openmp', required : false) # OpenMP 
+if openmp_dep.found()
+    message('OpenMP found! Parallel mode enabled.')
+else
+    message('OpenMP NOT found. Compiling in serial mode.')
+endif
+
+
 # Create a list to store our source files
 sources = []
 
@@ -29,5 +38,6 @@ sources += files('src/main.cpp')
 executable('nanoRenderer', 
     sources : sources,
     include_directories : include_dir,
+    dependencies : openmp_dep,
     install : true
 )

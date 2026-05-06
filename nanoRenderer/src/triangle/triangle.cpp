@@ -1,36 +1,30 @@
 #include "triangle.h"
 
+std::tuple<int, int> minmax3(int a, int b, int c) {
+    return { std::min(std::min(a, b), c), std::max(std::max(a, b), c)};
+}
+
+double signed_triangle_area(int ax, int ay, int bx, int by, int cx, int cy) {
+    return 0.5 * ((by - ay)*(bx + ax) + (cy - by)*(cx + bx) + (ay - cy)*(ax + cx));
+}
+
 void triangle(int ax, int ay, int bx, int by, int cx, int cy, TGAImage &framebuffer, TGAColor color) {
-    // Sort the vertices a, b, c in ascending Y order via bubble sort
-    if (ay > by) { std::swap(ax, bx); std::swap(ay, by); }
-    if (ay > cy) { std::swap(ax, cx); std::swap(ay, cy); }
-    if (by > cy) { std::swap(bx, cx); std::swap(by, cy); }
+    auto [bbminx, bbmaxx] = minmax3(ax, bx, cx);
+    auto [bbminy, bbmaxy] = minmax3(ay, by, cy);
+    double total_area = signed_triangle_area(ax, ay, bx, by, cx, cy);
 
-    int total_height = cy - ay; 
+#pragma omp parallel for
+    for (int x = bbminx; x <= bbmaxx; x++) {
+        for (int y = bbminy; y <= bbmaxy; y++) {
+            // Compute the barycentric coordinates
+            double alpha = signed_triangle_area(x, y, bx, by, cx, cy) / total_area;
+            double beta  = signed_triangle_area(x, y, cx, cy, ax, ay) / total_area;
+            double gamma = signed_triangle_area(x, y, ax, ay, bx, by) / total_area;
 
-    // Scan-line rasterization for lower half
-    if (ay != by) {
-        int segment_height = by - ay;
-        for (int y = ay; y <= by; y++) {
-            int x1 = ax + ((cx - ax) * (y - ay)) / total_height;
-            int x2 = ax + ((bx - ax) * (y - ay)) / segment_height;
-            
-            // Draw a horizontal line without overheads from line.h
-            for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++)
-                framebuffer.set(x, y, color); 
-        }
-    }
+            // Negative barycentric coordinate means that the pixel is outside the triangle
+            if (alpha < 0 || beta < 0 || gamma < 0) continue; // Skip rendering
 
-    // Scan-line rasterization for upper half
-    if (by != cy) {
-        int segment_height = cy - by;
-        for (int y = by; y <= cy; y++) {
-            int x1 = ax + ((cx - ax) * (y - ay)) / total_height;
-            int x2 = bx + ((cx - bx) * (y - by)) / segment_height;
-            
-            // Draw a horizontal line without overheads from line.h
-            for (int x = std::min(x1, x2); x <= std::max(x1, x2); x++)
-                framebuffer.set(x, y, color); 
+            framebuffer.set(x, y, color); // Otherwise, render the pixel
         }
     }
 }
