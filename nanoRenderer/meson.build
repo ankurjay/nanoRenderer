@@ -20,6 +20,7 @@ subdir('src/tgaimage')
 subdir('src/model')
 subdir('src/wireframe')
 subdir('src/line')
+subdir('src/triangle')
 
 # Finally, add the main entry point
 sources += files('src/main.cpp')
