@@ -30,6 +30,7 @@ subdir('src/model')
 subdir('src/wireframe')
 subdir('src/line')
 subdir('src/triangle')
+subdir('src/mesh')
 
 # Finally, add the main entry point
 sources += files('src/main.cpp')
