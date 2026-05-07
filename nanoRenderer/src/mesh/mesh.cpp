@@ -12,26 +12,27 @@ Mesh::Mesh(const std::string filename) : model(filename) {}
 * We want to project (x,y,z) orthogonally to (x,y), shift the (x,y) to be in [0, 2]^2 square
 * and finally scale it to span the screen defined by width and height 
 */
-std::tuple<int, int> Mesh::project_orthogonal(vec3 v, int width, int height) {
+std::tuple<int, int, int> Mesh::project_orthogonal(vec3 v, int width, int height) {
     return {
         (v.x + 1.f) * width / 2,
-        (v.y + 1.f) * height / 2
+        (v.y + 1.f) * height / 2,
+        (v.z + 1.f) * 255 / 2
     };
 }
 
 
-void Mesh::render(TGAImage &framebuffer) {
+void Mesh::render(TGAImage &framebuffer, TGAImage &zbuffer) {
     int width = framebuffer.width();
     int height = framebuffer.height();
 
     for (int i = 0; i < model.nfaces(); i++) {
         // Iterate through all triangles
-        auto [ax, ay] = project_orthogonal(model.vert(i, 0), width, height);
-        auto [bx, by] = project_orthogonal(model.vert(i, 1), width, height);
-        auto [cx, cy] = project_orthogonal(model.vert(i, 2), width, height);
+        auto [ax, ay, az] = project_orthogonal(model.vert(i, 0), width, height);
+        auto [bx, by, bz] = project_orthogonal(model.vert(i, 1), width, height);
+        auto [cx, cy, cz] = project_orthogonal(model.vert(i, 2), width, height);
         TGAColor rnd;
         for (int i = 0; i < 3; i++) rnd[i] = std::rand() % 255;
-        triangle(ax, ay, bx, by, cx, cy, framebuffer, rnd);
+        triangle(ax, ay, az, bx, by, bz, cx, cy, cz, framebuffer, zbuffer, rnd);
     }    
 }
 

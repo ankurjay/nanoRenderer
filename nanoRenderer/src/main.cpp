@@ -10,15 +10,17 @@ int main(int argc, char** argv) {
 
     // Create a blank buffer
     TGAImage framebuffer(width, height, TGAImage::RGB);
-  
+    TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
+    
     // Create a mesh
     Mesh mesh(argv[1]);
 
     // Render the mesh
-    mesh.render(framebuffer);
+    mesh.render(framebuffer, zbuffer);
     
     // Write the buffer to a file
     framebuffer.write_tga_file("framebuffer.tga");
+    zbuffer.write_tga_file("zbuffer.tga");
 
     return 0;
 }
